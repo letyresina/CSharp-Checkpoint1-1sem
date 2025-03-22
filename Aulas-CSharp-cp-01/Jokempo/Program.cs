@@ -148,4 +148,26 @@ class Program
         // List<int> armaCarregada = recarregaArma(); // Agora usa essa variavel para fazer o adicionaBala()
         // Acima é a forma de usar a "ARMA"
     }
+
+    static List<int> adicionaBala(List<int> roletaRussa)
+    {
+        Random random = new Random();
+        
+        if (roletaRussa.Contains(0))
+        {
+            roletaRussa.Remove(0);
+            roletaRussa.Add(1);
+        }
+        else
+        {
+            return roletaRussa;
+        }
+
+        roletaRussa = roletaRussa.OrderBy(x => random.Next()).ToList();
+        return roletaRussa;
+
+        // roletaRussa = adicionaBala(roletaRussa); 
+        // Acima como usar o adicionar bala
+
+    }
 }
