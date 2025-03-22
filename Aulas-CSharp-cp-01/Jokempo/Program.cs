@@ -7,19 +7,6 @@ class Program
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        List<int> recarregaArma()
-        {
-            List<int> roletaRussa = new List<int> { 1, 0, 0, 0, 0, 0, 0 };
-
-            Random random = new Random();
-            roletaRussa = roletaRussa.OrderBy(x => random.Next()).ToList();
-            return roletaRussa;
-        }
-
-        List<int> armaCarregada = recarregaArma(); // Agora usa essa variavel para fazer o adicionaBala()
-
-
-        /*
         // Dicionário com as opções do jogo
         Dictionary<int, string> jogadas = new Dictionary<int, string>
         {
@@ -104,7 +91,6 @@ class Program
                 Console.WriteLine("\nVamos jogar novamente!");
             }
         }
-        */
     }
 
     // Função para verificar quem vence
@@ -150,10 +136,16 @@ class Program
         }
     }
 
-    static bool roletaRussa()
+    // Função de recarregar a arma.
+    static List<int> recarregaArma()
     {
+        List<int> roletaRussa = new List<int> { 1, 0, 0, 0, 0, 0, 0 };
 
+        Random random = new Random();
+        roletaRussa = roletaRussa.OrderBy(x => random.Next()).ToList();
+        return roletaRussa;
 
-        return true;
+        // List<int> armaCarregada = recarregaArma(); // Agora usa essa variavel para fazer o adicionaBala()
+        // Acima é a forma de usar a "ARMA"
     }
 }
