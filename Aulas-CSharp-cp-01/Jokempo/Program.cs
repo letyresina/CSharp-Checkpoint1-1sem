@@ -1,173 +1,173 @@
 using System;
 using System.Collections.Generic;
 
-class Program
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+Dictionary<string, (int vitórias, int empates, int derrotas)> jogadores = new Dictionary<string, (int, int, int)>();
+Dictionary<int, string> jogadas = new Dictionary<int, string>
 {
-    static void Main()
+    { 0, "Pedra" },
+    { 1, "Papel" },
+    { 2, "Tesoura" }
+};
+
+int vitoriasComputador = 0, derrotasComputador = 0, empatesComputador = 0;
+
+Console.WriteLine("Olá! Vamos jogar Jokempo Menos Um?");
+Console.WriteLine("1 - Sim ou 0 - Não");
+int continuar = (int)Console.ReadKey().KeyChar - '0';
+
+while (continuar == 1)
+{
+    List<int> armaCarregada = RecarregaArma();
+    string nomeJogador = ObterNomeJogador();
+
+    if (!jogadores.ContainsKey(nomeJogador))
     {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-        // Dicionário com as opções do jogo
-        Dictionary<int, string> jogadas = new Dictionary<int, string>
-        {
-            { 0, "Pedra" },
-            { 1, "Papel" },
-            { 2, "Tesoura" }
-        };
-
-        while (true)
-        {
-            Console.WriteLine("\n\nOlá! Vamos jogar Jokempo Menos Um?");
-            Console.WriteLine("1 - Sim ou 0 - Não");
-            if (Console.ReadKey().KeyChar == '0')
-            {
-                Console.WriteLine("\nTchau! Jogamos depois!");
-                break;
-            }
-
-            Console.WriteLine("\n\nCada jogador escolhe duas opções, mas só pode usar uma para competir.");
-            Console.WriteLine("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
-
-            int escolhaComputador1 = new Random().Next(0, 3); // Computador escolhe aleatoriamente a primeira jogada
-            int escolhaComputador2 = new Random().Next(0, 3); // Computador escolhe aleatoriamente a segunda jogada
-
-            Console.WriteLine("\nO computador já fez suas escolhas.");
-
-            // Escolhas do jogador
-            Console.Write("\nEscolha sua primeira opção: ");
-            int escolhaJogador1 = (int)(Console.ReadKey().KeyChar - '0'); 
-            Console.Write("\nEscolha sua segunda opção: ");
-            int escolhaJogador2 = (int)(Console.ReadKey().KeyChar - '0'); 
-
-            Console.WriteLine($"\n\nVocê escolheu: {jogadas[escolhaJogador1]} e {jogadas[escolhaJogador2]}");
-            Console.WriteLine($"O computador escolheu: {jogadas[escolhaComputador1]} e {jogadas[escolhaComputador2]}");
-
-            // Jogador escolhe qual jogada usar
-            Console.Write($"\nAgora escolha qual jogada deseja usar (1 - {jogadas[escolhaJogador1]} ou 2 - {jogadas[escolhaJogador2]}): ");
-            int opcaoJogador = (int)(Console.ReadKey().KeyChar - '0'); 
-            while (opcaoJogador != 1 && opcaoJogador != 2)
-            {
-                Console.Write("\nEscolha inválida, escolha 1 ou 2!");
-                opcaoJogador = (int)(Console.ReadKey().KeyChar - '0');
-            }
-
-            int jogadaFinalJogador;
-
-            if (opcaoJogador == 1)
-            { jogadaFinalJogador = escolhaJogador1; }
-            else
-            { jogadaFinalJogador = escolhaJogador2; }
-
-            // O computador escolhe sua jogada de forma estratégica
-            int jogadaFinalComputador = EscolherMelhorJogadaComputador(escolhaComputador1, escolhaComputador2, escolhaJogador1, escolhaJogador2);
-
-            // Exibe as jogadas finais escolhidas
-            Console.WriteLine($"\nVocê escolheu: {jogadas[jogadaFinalJogador]}");
-            Console.WriteLine($"O computador escolheu: {jogadas[jogadaFinalComputador]}");
-
-            // Verificação do vencedor
-            if (jogadaFinalJogador == jogadaFinalComputador)
-            {
-                Console.WriteLine("\nEmpate!");
-            }
-            else if (Vence(jogadaFinalJogador, jogadaFinalComputador))
-            {
-                Console.WriteLine("\nParabéns! Você venceu!");
-            }
-            else
-            {
-                Console.WriteLine("\nO computador venceu!");
-            }
-
-            // Pergunta se o jogador quer continuar
-            Console.WriteLine("\nDeseja jogar novamente? (1 - Sim, 0 - Não)");
-            if (Console.ReadKey().KeyChar == '0')
-            {
-                Console.WriteLine("\nTchau! Jogamos depois!");
-                break;
-            }
-            else
-            {
-                Console.WriteLine("\nVamos jogar novamente!");
-            }
-        }
+        jogadores[nomeJogador] = (0, 0, 0);
     }
 
-    // Função para verificar quem vence
-    static bool Vence(int jogador, int computador)
+    continuar = 3;
+
+    while (continuar == 3)
     {
-        return (jogador == 0 && computador == 2) ||  // Pedra vence Tesoura
-               (jogador == 1 && computador == 0) ||  // Papel vence Pedra
-               (jogador == 2 && computador == 1);    // Tesoura vence Papel
-    }
+        Console.WriteLine($"\n\n{nomeJogador} vamos jogar...");
+        Console.WriteLine("O computador já fez suas escolhas.");
+        Console.WriteLine("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
 
-    // Função para escolher a melhor jogada do computador
-    static int EscolherMelhorJogadaComputador(int escolhaComputador1, int escolhaComputador2, int escolhaJogador1, int escolhaJogador2)
-    {
-        // Se o computador pode vencer qualquer uma das jogadas do jogador, ele escolhe a melhor opção
-        if (Vence(escolhaComputador1, escolhaJogador1) || Vence(escolhaComputador1, escolhaJogador2))
-        {
-            return escolhaComputador1;
-        }
-        else if (Vence(escolhaComputador2, escolhaJogador1) || Vence(escolhaComputador2, escolhaJogador2))
-        {
-            return escolhaComputador2;
-        }
-        // Se não puder vencer, tenta empatar com a jogada mais frequente do jogador
-        else if (escolhaComputador1 == escolhaJogador1 || escolhaComputador1 == escolhaJogador2)
-        {
-            return escolhaComputador1;
-        }
-        else if (escolhaComputador2 == escolhaJogador1 || escolhaComputador2 == escolhaJogador2)
-        {
-            return escolhaComputador2;
-        }
-        // Caso o computador não consiga nem vencer nem empatar, escolhe a jogada mais forte
-        else
-        {
-            if (Vence(escolhaComputador1, escolhaComputador2))
-            {
-                return escolhaComputador1;
-            }
-            else
-            {
-                return escolhaComputador2;
-            }
-        }
-    }
+        int escolhaComputador1 = new Random().Next(0, 3);
+        int escolhaComputador2 = new Random().Next(0, 3);
 
-    // Função de recarregar a arma.
-    static List<int> recarregaArma()
-    {
-        List<int> roletaRussa = new List<int> { 1, 0, 0, 0, 0, 0, 0 };
+        Console.Write("\nEscolha sua primeira opção: ");
+        int escolhaJogador1 = ValidaEscolha(0, 1, 2);
 
-        Random random = new Random();
-        roletaRussa = roletaRussa.OrderBy(x => random.Next()).ToList();
-        return roletaRussa;
+        Console.Write("\nEscolha sua segunda opção: ");
+        int escolhaJogador2 = ValidaEscolha(0, 1, 2);
 
-        // List<int> armaCarregada = recarregaArma(); // Agora usa essa variavel para fazer o adicionaBala()
-        // Acima é a forma de usar a "ARMA"
-    }
+        Console.WriteLine($"\n\nO computador escolheu: {jogadas[escolhaComputador1]} e {jogadas[escolhaComputador2]}");
+        Console.Write($"\nAgora escolha qual jogada deseja usar (1 - {jogadas[escolhaJogador1]} ou 2 - {jogadas[escolhaJogador2]}): ");
+        int opcaoJogador = ValidaEscolha(1, 2);
 
-    static List<int> adicionaBala(List<int> roletaRussa)
-    {
-        Random random = new Random();
-        
-        if (roletaRussa.Contains(0))
+        int jogadaFinalJogador = (opcaoJogador == 1) ? escolhaJogador1 : escolhaJogador2;
+        int jogadaFinalComputador = EscolherMelhorJogadaComputador(escolhaComputador1, escolhaComputador2, escolhaJogador1, escolhaJogador2);
+
+        Console.WriteLine($"\nVocê escolheu: {jogadas[jogadaFinalJogador]}");
+        Console.WriteLine($"O computador escolheu: {jogadas[jogadaFinalComputador]}");
+
+        if (jogadaFinalJogador == jogadaFinalComputador)
         {
-            roletaRussa.Remove(0);
-            roletaRussa.Add(1);
+            Console.WriteLine("\nEmpate!");
+            jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates + 1, jogadores[nomeJogador].derrotas);
+            empatesComputador++;
+        }
+        else if (Vence(jogadaFinalJogador, jogadaFinalComputador))
+        {
+            Console.WriteLine("\nParabéns! Você venceu!");
+            jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias + 1, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas);
+            derrotasComputador++;
+            SimularRoletaRussa("Computador", armaCarregada) ;
         }
         else
         {
-            return roletaRussa;
+            Console.WriteLine("\nO computador venceu!");
+            jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas + 1);
+            vitoriasComputador++;
+            if (SimularRoletaRussa(nomeJogador, armaCarregada)) jogadores.Remove(nomeJogador);
         }
 
-        roletaRussa = roletaRussa.OrderBy(x => random.Next()).ToList();
-        return roletaRussa;
+        Console.WriteLine($"\n1 - Jogar com outro jogador, 2 - Listar estatísticas, 3 - Continuar jogando como {nomeJogador}, 0 - Sair");
+        continuar = ValidaEscolha(0, 1, 2, 3);
+        if (continuar == 2)
+        {
+            ListarEstatisticasJogadores();
+            Console.WriteLine($"\n1 - Jogar com outro jogador, 2 - Listar estatísticas, 3 - Continuar jogando como {nomeJogador}, 0 - Sair");
+            continuar = ValidaEscolha(0, 1, 2, 3);
+        }
+        Console.Clear();
+    }
+}
+Console.WriteLine("\nTchau! Jogamos depois!");
 
-        // roletaRussa = adicionaBala(roletaRussa); 
-        // Acima como usar o adicionar bala
+static string ObterNomeJogador()
+{
+    Console.WriteLine("\nQual é o seu nome?");
+    string nomeJogador = Console.ReadLine();
 
+    while (string.IsNullOrEmpty(nomeJogador))
+    {
+        Console.WriteLine("Você precisa digitar o seu nome. Pode ser o seu apelido...");
+        nomeJogador = Console.ReadLine();
+    }
+
+    return nomeJogador;
+}
+
+static int ValidaEscolha(params int[] opcoesValidas)
+{
+    int opcao = (int)Console.ReadKey().KeyChar - '0';
+    while (!opcoesValidas.Contains(opcao))
+    {
+        Console.WriteLine("\nOpção inválida. Tente novamente.");
+        opcao = (int)Console.ReadKey().KeyChar - '0';
+    }
+    return opcao;
+}
+
+static bool Vence(int jogador, int computador)
+{
+    return (jogador == 0 && computador == 2) ||
+           (jogador == 1 && computador == 0) ||
+           (jogador == 2 && computador == 1);
+}
+
+static int EscolherMelhorJogadaComputador(int escolhaComputador1, int escolhaComputador2, int escolhaJogador1, int escolhaJogador2)
+{
+    if (Vence(escolhaComputador1, escolhaJogador1) || Vence(escolhaComputador1, escolhaJogador2))
+    {
+        return escolhaComputador1;
+    }
+    else if (Vence(escolhaComputador2, escolhaJogador1) || Vence(escolhaComputador2, escolhaJogador2))
+    {
+        return escolhaComputador2;
+    }
+    else
+    {
+        return escolhaComputador1;
+    }
+}
+
+void ListarEstatisticasJogadores()
+{
+    Console.WriteLine("\nJogadores e suas estatísticas:\n");
+    Console.WriteLine("===================================================================");
+    foreach (var jogador in jogadores)
+    {
+        Console.WriteLine($"{jogador.Key}: {jogador.Value.vitórias} vitórias, {jogador.Value.empates} empates, {jogador.Value.derrotas} derrotas");
+    }
+    Console.WriteLine("===================================================================\n");
+}
+
+// Função de recarregar a arma.
+static List<int> RecarregaArma()
+{
+    List<int> roletaRussa = new List<int> { 1, 0, 0, 0, 0, 0 };
+    Random random = new Random();
+    return roletaRussa.OrderBy(x => random.Next()).ToList();
+}
+
+static bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
+{
+    Console.WriteLine($"{nomeJogador}, você perdeu! Agora vai puxar o gatilho...");
+    int indiceBala = new Random().Next(0, roletaRussa.Count);
+
+    if (roletaRussa[indiceBala] == 1)
+    {
+        Console.WriteLine($"BANG! {nomeJogador} morreu!");
+        return true;
+    }
+    else
+    {
+        Console.WriteLine($"CLIC! {nomeJogador} sobreviveu...");
+        return false;
     }
 }
