@@ -16,7 +16,7 @@ int vitoriasComputador = 0, derrotasComputador = 0, empatesComputador = 0;
 
 Console.WriteLine("Olá! Vamos jogar Jokempo Menos Um?");
 Console.WriteLine("1 - Sim ou 0 - Não");
-int continuar = (int)Console.ReadKey().KeyChar - '0';
+int continuar = ValidaEscolha(0,1);
 List<int> armaCarregada = RecarregaArma();
 
 //Loop principal que mantém o jogo em execução até que o usuário escolha sair.
@@ -31,12 +31,11 @@ while (continuar == 1)
         //Recarrega a arma se iniciar com um novo jogador
         armaCarregada = RecarregaArma();
     }
-
+    Console.Clear();
     continuar = 3;
 
     while (continuar == 3)
     {
-        Console.Clear();
         Console.WriteLine($"{nomeJogador} vamos jogar...");
         Console.WriteLine("O computador já fez suas escolhas.");
         Console.WriteLine("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
@@ -71,6 +70,7 @@ while (continuar == 1)
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates + 1, jogadores[nomeJogador].derrotas);
             empatesComputador++;
         }
+        //Caso o pc perca, ele joga a roleta russa
         else if (Vence(jogadaFinalJogador, jogadaFinalComputador))
         {
             Console.WriteLine("\nParabéns! Você venceu!");
@@ -79,8 +79,13 @@ while (continuar == 1)
             if (SimularRoletaRussa("Computador", armaCarregada))
             {
                 armaCarregada = RecarregaArma();
+                Console.WriteLine("\nJogar de novo? 1 - Sim  0 - Não");
+                continuar = ValidaEscolha(0, 1);
+                Console.Clear();
+                break;
             }
         }
+        // Caso o jogador perca, ele joga a roleta russa
         else
         {
             Console.WriteLine("\nO computador venceu!");
@@ -90,22 +95,29 @@ while (continuar == 1)
             {
                 jogadores.Remove(nomeJogador);
                 armaCarregada = RecarregaArma();
+                Console.WriteLine("\nJogar de novo? 1 - Sim  0 - Não");
+                continuar = ValidaEscolha(0, 1);
+                Console.Clear();
+                break;
             }
         }
 
         //Exibição do menu após fim da partida
-        continuar = Menu(nomeJogador);
+        Console.WriteLine("\n2 - Estatísticas  3 - Continuar");
+        continuar = ValidaEscolha(2, 3);
+        Console.Clear();
         if (continuar == 2)
         {
             ListarEstatisticasJogadores();
-            continuar = Menu(nomeJogador);
+            Console.WriteLine("\n3 - Continuar");
+            continuar = ValidaEscolha(3);
+            Console.Clear();
         }
-        Console.Clear();
     }
 }
 Console.WriteLine("\nTchau! Jogamos depois!"); //Fim do Jogo
 
-//Métodos
+#region Metodos
 
 /// <summary>
 /// Método para obter o nome do jogador.
@@ -167,9 +179,9 @@ static int EscolherMelhorJogadaComputador(int escolhaComputador1, int escolhaCom
 {
     // Matriz baseada na tabela (0 = Pedra, 1 = Papel, 2 = Tesoura)
     double[,] probabilidades = {
-        { 0.0, 0.25, 0.75 }, // Pedra contra (Pedra, Papel, Tesoura)
-        { 0.75, 0.0, 0.25 }, // Papel contra (Pedra, Papel, Tesoura)
-        { 0.25, 0.75, 0.0 }  // Tesoura contra (Pedra, Papel, Tesoura)
+        { 0.25, 0.0, 0.75 }, // Pedra contra (Pedra, Papel, Tesoura)
+        { 0.75, 0.25, 0.0 }, // Papel contra (Pedra, Papel, Tesoura)
+        { 0.0, 0.75, 0.25 }  // Tesoura contra (Pedra, Papel, Tesoura)
     };
 
     // Calcula a média de vitória para cada escolha do PC contra as do jogador
@@ -226,25 +238,8 @@ static bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
     {
         Console.WriteLine($"CLIC! {nomeJogador} sobreviveu...");
         roletaRussa.Remove(0);
+        Console.WriteLine($"Agora a arma tem {roletaRussa.Count} balas restantes.");
         return false;
     }
 }
-
-/// <summary>
-/// Método do menu principal do jogo.
-/// Exibe as opções para o jogador escolher.
-/// </summary>
-/// <param name="nomeJogador">Pega o nome do jogador daquela rodada em específico</param>
-/// <returns>Retorna uma opcao valida entre 0 e 3</returns>
-static int Menu(string nomeJogador)
-{
-    Console.WriteLine("\n=== MENU PRINCIPAL ===");
-    Console.WriteLine("1 - Jogar com outro jogador");
-    Console.WriteLine("2 - Listar estatísticas");
-    Console.WriteLine($"3 - Continuar jogando como {nomeJogador}");
-    Console.WriteLine("0 - Sair");
-    Console.Write("Escolha uma opção: ");
-
-    // Captura a escolha do usuário e retorna
-    return ValidaEscolha(0, 1, 2, 3);
-}
+#endregion
