@@ -246,7 +246,7 @@ static bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
         Console.WriteLine(FiggleFonts.Standard.Render("CLIC!"));
         Console.WriteLine($" {nomeJogador} sobreviveu...");
         roletaRussa.Remove(0);
-        Console.WriteLine($"A arma recebeu mais uma bala, 1/{roletaRussa.Count} é a sua chance de sobrevivencia.");
+        Console.WriteLine($"A arma recebeu mais uma bala. Tem 6 slots {roletaRussa.Count} estão vazios...");
         return false;
     }
 }
