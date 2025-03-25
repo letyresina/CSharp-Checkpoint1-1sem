@@ -1,7 +1,13 @@
+using Figgle;
 using System;
 using System.Collections.Generic;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
+
+Console.ForegroundColor = ConsoleColor.White; //Cor do Texto
+Console.BackgroundColor = ConsoleColor.DarkMagenta; // Cor de fundo do texto
+Console.Clear();//Faz do fundo do texto o terminal da mesma cor
+
 
 //Dicionário que armazena as estatísticas de vitórias, empates e derrotas de cada jogador.
 Dictionary<string, (int vitórias, int empates, int derrotas)> jogadores = new Dictionary<string, (int, int, int)>();
@@ -14,9 +20,9 @@ Dictionary<int, string> jogadas = new Dictionary<int, string>
 };
 int vitoriasComputador = 0, derrotasComputador = 0, empatesComputador = 0;
 
-Console.WriteLine("Olá! Vamos jogar Jokempo Menos Um?");
+Console.WriteLine(FiggleFonts.Standard.Render("Jokempo Menos Um!"));
 Console.WriteLine("1 - Sim ou 0 - Não");
-int continuar = ValidaEscolha(0,1);
+int continuar = ValidaEscolha(0, 1);
 List<int> armaCarregada = RecarregaArma();
 
 //Loop principal que mantém o jogo em execução até que o usuário escolha sair.
@@ -36,7 +42,7 @@ while (continuar == 1)
 
     while (continuar == 3)
     {
-        Console.WriteLine($"{nomeJogador} vamos jogar...");
+        Console.WriteLine(FiggleFonts.Slant.Render($"{nomeJogador} VS Computador"));
         Console.WriteLine("O computador já fez suas escolhas.");
         Console.WriteLine("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
 
@@ -73,7 +79,7 @@ while (continuar == 1)
         //Caso o pc perca, ele joga a roleta russa
         else if (Vence(jogadaFinalJogador, jogadaFinalComputador))
         {
-            Console.WriteLine("\nParabéns! Você venceu!");
+            Console.WriteLine(FiggleFonts.Small.Render("Você venceu!"));
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias + 1, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas);
             derrotasComputador++;
             if (SimularRoletaRussa("Computador", armaCarregada))
@@ -88,7 +94,7 @@ while (continuar == 1)
         // Caso o jogador perca, ele joga a roleta russa
         else
         {
-            Console.WriteLine("\nO computador venceu!");
+            Console.WriteLine(FiggleFonts.Small.Render("Computador venceu!"));
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas + 1);
             vitoriasComputador++;
             if (SimularRoletaRussa(nomeJogador, armaCarregada))
@@ -115,7 +121,7 @@ while (continuar == 1)
         }
     }
 }
-Console.WriteLine("\nTchau! Jogamos depois!"); //Fim do Jogo
+Console.WriteLine(FiggleFonts.Standard.Render("Tchau!"));
 
 #region Metodos
 
@@ -231,14 +237,16 @@ static bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
 
     if (roletaRussa[indiceBala] == 1)
     {
-        Console.WriteLine($"BANG! {nomeJogador} morreu!");
+        Console.WriteLine(FiggleFonts.Standard.Render("BANG!"));
+        Console.WriteLine($" {nomeJogador} morreu!");
         return true;
     }
     else
     {
-        Console.WriteLine($"CLIC! {nomeJogador} sobreviveu...");
+        Console.WriteLine(FiggleFonts.Standard.Render("CLIC!"));
+        Console.WriteLine($" {nomeJogador} sobreviveu...");
         roletaRussa.Remove(0);
-        Console.WriteLine($"Agora a arma tem {roletaRussa.Count} balas restantes.");
+        Console.WriteLine($"A arma recebeu mais uma bala, 1/{roletaRussa.Count} é a sua chance de sobrevivencia.");
         return false;
     }
 }
