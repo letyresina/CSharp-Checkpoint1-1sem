@@ -25,6 +25,7 @@ Console.WriteLine("1 - Sim ou 0 - Não");
 int continuar = ValidaEscolha(0, 1);
 List<int> armaCarregada = RecarregaArma();
 
+#region Fluxo Principal
 //Loop principal que mantém o jogo em execução até que o usuário escolha sair.
 while (continuar == 1)
 {
@@ -122,6 +123,7 @@ while (continuar == 1)
     }
 }
 Console.WriteLine(FiggleFonts.Standard.Render("Tchau!"));
+#endregion
 
 #region Metodos
 
