@@ -1,6 +1,7 @@
 using Figgle;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -20,8 +21,9 @@ Dictionary<int, string> jogadas = new Dictionary<int, string>
 };
 int vitoriasComputador = 0, derrotasComputador = 0, empatesComputador = 0;
 
-Console.WriteLine(FiggleFonts.Standard.Render("Jokempo Menos Um!"));
-Console.WriteLine("1 - Sim ou 0 - Não");
+ExibirBanner("Jokempo Menos Um!", 0);
+EscreverMensagem("1 - Sim ou 0 - Não");
+
 int continuar = ValidaEscolha(0, 1);
 List<int> armaCarregada = RecarregaArma();
 
@@ -43,29 +45,33 @@ while (continuar == 1)
 
     while (continuar == 3)
     {
-        Console.WriteLine(FiggleFonts.Slant.Render($"{nomeJogador} VS Computador"));
-        Console.WriteLine("O computador já fez suas escolhas.");
-        Console.WriteLine("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
+
+        ExibirBanner($"{nomeJogador} VS Computador",1);
+
+        EscreverMensagem("O computador já fez suas escolhas.");
+        EscreverMensagem("Opções: 0 - Pedra, 1 - Papel, 2 - Tesoura");
 
         int escolhaComputador1 = new Random().Next(0, 3);
         int escolhaComputador2 = new Random().Next(0, 3);
 
         //Obtêm as escolhas do jogador
-        Console.Write("\nEscolha sua primeira opção: ");
+        EscreverMensagem("Escolha sua primeira opção: ");
         int escolhaJogador1 = ValidaEscolha(0, 1, 2);
-        Console.Write("\nEscolha sua segunda opção: ");
+        EscreverMensagem("Escolha sua segunda opção: ");
         int escolhaJogador2 = ValidaEscolha(0, 1, 2);
 
         Console.Clear();
-        Console.WriteLine($"O computador escolheu: {jogadas[escolhaComputador1]} e {jogadas[escolhaComputador2]}");
-        Console.Write($"\n{nomeJogador} escolha qual jogada deseja usar (1 - {jogadas[escolhaJogador1]} ou 2 - {jogadas[escolhaJogador2]}): ");
+        EscreverMensagem($"O computador escolheu: {jogadas[escolhaComputador1]} e {jogadas[escolhaComputador2]}");
+        EscreverMensagem($"{nomeJogador} escolha qual jogada deseja usar (1 - {jogadas[escolhaJogador1]} ou 2 - {jogadas[escolhaJogador2]}): ");
         int opcaoJogador = ValidaEscolha(1, 2);
 
         int jogadaFinalJogador = (opcaoJogador == 1) ? escolhaJogador1 : escolhaJogador2;
         int jogadaFinalComputador = EscolherMelhorJogadaComputador(escolhaComputador1, escolhaComputador2, escolhaJogador1, escolhaJogador2);
 
-        Console.WriteLine($"\nVocê escolheu: {jogadas[jogadaFinalJogador]}");
-        Console.WriteLine($"O computador escolheu: {jogadas[jogadaFinalComputador]}");
+        EscreverMensagem($"\nVocê escolheu: {jogadas[jogadaFinalJogador]}");
+        EscreverMensagem($"O computador escolheu: {jogadas[jogadaFinalComputador]}");
+
+        Console.WriteLine("\n");
 
         /**
          * Verifica o resultado da partida (empate, vitória ou derrota) e atualiza as estatísticas.
@@ -73,20 +79,23 @@ while (continuar == 1)
          */
         if (jogadaFinalJogador == jogadaFinalComputador)
         {
-            Console.WriteLine("\nEmpate!");
+            ExibirBanner("Empate!", 2);
+
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates + 1, jogadores[nomeJogador].derrotas);
             empatesComputador++;
         }
         //Caso o pc perca, ele joga a roleta russa
         else if (Vence(jogadaFinalJogador, jogadaFinalComputador))
         {
-            Console.WriteLine(FiggleFonts.Small.Render("Você venceu!"));
+            ExibirBanner("Você Venceu!", 2);
+            
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias + 1, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas);
             derrotasComputador++;
             if (SimularRoletaRussa("Computador", armaCarregada))
             {
                 armaCarregada = RecarregaArma();
-                Console.WriteLine("\nJogar de novo? 1 - Sim  0 - Não");
+                EscreverMensagem("Jogar de novo? 1 - Sim  0 - Não");
+
                 continuar = ValidaEscolha(0, 1);
                 Console.Clear();
                 break;
@@ -95,34 +104,37 @@ while (continuar == 1)
         // Caso o jogador perca, ele joga a roleta russa
         else
         {
-            Console.WriteLine(FiggleFonts.Small.Render("Computador venceu!"));
+            ExibirBanner("Computador venceu!", 2);
+
             jogadores[nomeJogador] = (jogadores[nomeJogador].vitórias, jogadores[nomeJogador].empates, jogadores[nomeJogador].derrotas + 1);
             vitoriasComputador++;
             if (SimularRoletaRussa(nomeJogador, armaCarregada))
             {
                 jogadores.Remove(nomeJogador);
                 armaCarregada = RecarregaArma();
-                Console.WriteLine("\nJogar de novo? 1 - Sim  0 - Não");
+                EscreverMensagem("Jogar de novo? 1 - Sim  0 - Não");
                 continuar = ValidaEscolha(0, 1);
+                EscreverMensagem("Jogar de novo? 1 - Sim  0 - Não");
+
                 Console.Clear();
                 break;
             }
         }
 
         //Exibição do menu após fim da partida
-        Console.WriteLine("\n2 - Estatísticas  3 - Continuar");
+        EscreverMensagem("2 - Estatísticas  3 - Continuar");
         continuar = ValidaEscolha(2, 3);
         Console.Clear();
         if (continuar == 2)
         {
             ListarEstatisticasJogadores();
-            Console.WriteLine("\n3 - Continuar");
+            Console.WriteLine("3 - Continuar");
             continuar = ValidaEscolha(3);
             Console.Clear();
         }
     }
 }
-Console.WriteLine(FiggleFonts.Standard.Render("Tchau!"));
+ExibirBanner("Tchau!", 0);
 #endregion
 
 #region Metodos
@@ -131,14 +143,14 @@ Console.WriteLine(FiggleFonts.Standard.Render("Tchau!"));
 /// Método para obter o nome do jogador.
 /// Pergunta ao jogador e retorna o nome.
 /// </summary>
-static string ObterNomeJogador()
+string ObterNomeJogador()
 {
-    Console.WriteLine("\nQual é o seu nome?");
+    EscreverMensagem("Qual é o seu nome?");
     string nomeJogador = Console.ReadLine();
 
     while (string.IsNullOrEmpty(nomeJogador))
     {
-        Console.WriteLine("Você precisa digitar o seu nome. Pode ser o seu apelido...");
+        EscreverMensagem("Você precisa digitar o seu nome. Pode ser o seu apelido...");
         nomeJogador = Console.ReadLine();
     }
 
@@ -151,12 +163,12 @@ static string ObterNomeJogador()
 ///<\summary>
 ///<param name="opcoesValidas">Lista de opções válidas.</param>
 ///<returns>O caractere escolhido pelo usuário.</returns>
-static int ValidaEscolha(params int[] opcoesValidas)
+int ValidaEscolha(params int[] opcoesValidas)
 {
     int opcao = (int)Console.ReadKey().KeyChar - '0';
     while (!opcoesValidas.Contains(opcao))
     {
-        Console.WriteLine("\nOpção inválida. Tente novamente.");
+        EscreverMensagem("Opção inválida. Tente novamente.");
         opcao = (int)Console.ReadKey().KeyChar - '0';
     }
     return opcao;
@@ -206,6 +218,7 @@ static int EscolherMelhorJogadaComputador(int escolhaComputador1, int escolhaCom
 void ListarEstatisticasJogadores()
 {
     Console.WriteLine("\nJogadores e suas estatísticas:\n");
+
     Console.WriteLine("===================================================================");
     foreach (var jogador in jogadores)
     {
@@ -232,24 +245,67 @@ static List<int> RecarregaArma()
 /// <param name="nomeJogador">Pega o nome do jogador da partida</param>
 /// <param name="roletaRussa">Lista que armazena os valores de 0s e 1 simulando a unica chance de 6 de morrer</param>
 /// <returns>Retorna verdadeiro se o jogador "morreu", falso se sobreviveu.</returns>
-static bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
+bool SimularRoletaRussa(string nomeJogador, List<int> roletaRussa)
 {
-    Console.WriteLine($"{nomeJogador}, você perdeu! Agora vai puxar o gatilho...");
+    EscreverMensagem($"{nomeJogador}, você perdeu! Agora vai puxar o gatilho...");
     int indiceBala = new Random().Next(0, roletaRussa.Count);
 
     if (roletaRussa[indiceBala] == 1)
     {
-        Console.WriteLine(FiggleFonts.Standard.Render("BANG!"));
+        ExibirBanner("BANG!", 0);
         Console.WriteLine($" {nomeJogador} morreu!");
         return true;
     }
     else
     {
-        Console.WriteLine(FiggleFonts.Standard.Render("CLIC!"));
-        Console.WriteLine($" {nomeJogador} sobreviveu...");
+        ExibirBanner("CLICK!",0);
+        EscreverMensagem($" {nomeJogador} sobreviveu...");
         roletaRussa.Remove(0);
-        Console.WriteLine($"A arma recebeu mais uma bala. Tem 7 slots {roletaRussa.Count} estão vazios...");
+        EscreverMensagem($"A arma recebeu mais uma bala. Tem 7 slots {roletaRussa.Count} estão vazios...");
         return false;
     }
 }
+
+/// <summary>
+/// Exibe um banner de texto estilizado centralizado no console.
+/// </summary>
+/// <param name="mensagem">Texto a ser exibido no banner.</param>
+/// <param name="x">Define o estilo da fonte do banner:  
+/// 0 - Standard  
+/// 1 - Slant  
+/// Qualquer outro valor - Small</param>
+void ExibirBanner(string mensagem,int x){
+
+    string banner;
+
+    if (x == 0) {
+        banner = FiggleFonts.Standard.Render(mensagem);
+    }else if (x == 1)
+    {
+        banner = FiggleFonts.Slant.Render(mensagem);
+
+    }else{
+        banner = FiggleFonts.Small.Render(mensagem);
+    }
+
+    var linhas = banner.Split("\n");
+    foreach (var linha in linhas)
+    {
+        if ((Console.WindowWidth - linha.Length) / 2 >= 0)
+            Console.SetCursorPosition((Console.WindowWidth - linha.Length) / 2, Console.CursorTop);
+        Console.WriteLine(linha);
+    }
+}
+
+/// <summary>
+/// Exibe uma mensagem de texto centralizada no console.
+/// </summary>
+/// <param name="mensagem">Texto a ser exibido.</param>
+void EscreverMensagem(string mensagem)
+{
+    Console.SetCursorPosition((Console.WindowWidth - mensagem.Length) / 2, Console.CursorTop);
+    Console.WriteLine(mensagem);
+}
+
+
 #endregion
